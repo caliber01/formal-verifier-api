@@ -1,4 +1,3 @@
-from formal_verifier import app
 from mongoengine import *
 from bson.json_util import dumps
 
@@ -13,11 +12,7 @@ class User(Document):
     is_authenticated = BooleanField()
     is_active = BooleanField(required=True)
     is_anonymous = BooleanField()
-    session_token = StringField()
     password_hash = BinaryField()
-
-    def get_id(self):
-        return str(self.session_token)
 
     @staticmethod
     def get_field_names():
@@ -40,8 +35,14 @@ class Labelling(EmbeddedDocument):
     labels = ListField(StringField(required=True))
 
 
-class LTS(Document):
-    author = ReferenceField(User)
-    transitions = ListField(EmbeddedDocumentField(Transition))
-    labellings = ListField(EmbeddedDocumentField(Labelling))
+class LTS(EmbeddedDocument):
+    transitions = EmbeddedDocumentListField(Transition)
+    labellings = EmbeddedDocumentListField(Labelling)
+
+
+class Project(Document):
+    owner = ReferenceField(User, required=True)
+    name = StringField(required=True)
+    description = StringField(required=True)
+    models = EmbeddedDocumentListField(LTS)
 
