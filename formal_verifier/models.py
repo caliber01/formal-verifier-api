@@ -26,10 +26,11 @@ class Labelling(EmbeddedDocument):
 
 
 class LTS(EmbeddedDocument):
-    name = StringField(required=True)
+    name = StringField(unique=True, required=True)
     initial_state = ListField(StringField(required=True))
     transitions = EmbeddedDocumentListField(Transition)
     labellings = EmbeddedDocumentListField(Labelling)
+    formulas = ListField(StringField(required=True))
 
 
 class Project(Document):

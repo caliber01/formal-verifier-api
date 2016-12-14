@@ -4,6 +4,7 @@ from flask_restful import Resource
 
 from formal_verifier import api
 from formal_verifier.models import Project
+from formal_verifier.mappers import map_lts_to_view_model
 
 
 class ModelsList(Resource):
@@ -17,7 +18,7 @@ class ModelsList(Resource):
 
         model = project.models.create(name=json['name'])
         project.save()
-        return model
+        return map_lts_to_view_model(model)
 
 
 api.add_resource(ModelsList, '/projects/<project_id>/models')

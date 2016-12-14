@@ -3,6 +3,7 @@ from fmse_tool.model.CTLLTS import CTLLTS
 from fmse_tool.model.Transition import Transition
 from fmse_tool.cli.diagram_generator import generate_extended_diagram
 
+from formal_verifier import app
 from formal_verifier.models import LTS as MongoLTS, Transition as MongoTransition, Labelling as MongoLabelling
 
 
@@ -46,13 +47,27 @@ def map_user_to_view_model(user):
     return data
 
 
+def generate_source(lts):
+    source = "".join(lts.initial_state) + "\n"
+    for (from_state, token, to_state) in lts.transitions:
+        source += "".join(from_state) + " " + token + " " + "".join(to_state) + "\n"
+    source += "\n"
+
+    for (state, labels) in lts.labellings.items():
+        source += "".join(state) + ": " + ", ".join(labels) + "\n"
+
+    return source
+
+
 def map_lts_to_view_model(model):
     lts = map_lts_from_mongo(model)
     name = model.name
     graph = generate_extended_diagram(lts, set())
     return {
         'name': name,
-        'graph': graph
+        'graph': graph,
+        'source': generate_source(lts),
+        'formulas': model.formulas
     }
 
 
@@ -60,7 +75,7 @@ def map_project_to_view_model(project):
     data = project.to_mongo()
     data['models'] = [
         map_lts_to_view_model(model)
-        for model in project.models
-        ]
+        for (index, model) in enumerate(project.models)
+    ]
     return data
 

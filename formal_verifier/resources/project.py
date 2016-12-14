@@ -4,6 +4,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from formal_verifier import api
 from formal_verifier.models import Project
+from formal_verifier.mappers import map_project_to_view_model
 
 
 class ProjectResource(Resource):
@@ -13,7 +14,7 @@ class ProjectResource(Resource):
         project = Project.objects(id=project_id).first()
         if project is None or not project.owner.username == get_jwt_identity():
             return abort(404)
-        return project
+        return map_project_to_view_model(project)
 
     @jwt_required
     def delete(self, project_id):
