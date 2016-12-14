@@ -1,8 +1,9 @@
-from flask import request, abort, jsonify
+from flask import request, abort
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from bson.json_util import dumps
 
 from formal_verifier import app, bcrypt
+from formal_verifier.mappers import map_user_to_view_model
 from formal_verifier.models import User
 
 
@@ -15,7 +16,7 @@ def login():
     if bcrypt.check_password_hash(user.password_hash, password):
         response = {
             'access_token': create_access_token(identity=username),
-            'user': user.to_mongo()
+            'user': map_user_to_view_model(user)
         }
         return dumps(response)
     else:
@@ -25,8 +26,7 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
     json = request.get_json()
-    fields = {key: json[key] for key in json if key in User.get_field_names()}
-    user = User(**fields)
+    user = User.from_json(json)
     user.password_hash = bcrypt.generate_password_hash(json['password'])
     user.is_active = True
     user.save()

@@ -1,5 +1,4 @@
 from mongoengine import *
-from bson.json_util import dumps
 
 connect()
 
@@ -14,15 +13,6 @@ class User(Document):
     is_anonymous = BooleanField()
     password_hash = BinaryField()
 
-    @staticmethod
-    def get_field_names():
-        return User._fields.keys()
-
-    def to_json(self, *args, **kwargs):
-        data = self.to_mongo()
-        data.pop('password_hash', None)
-        return dumps(data)
-
 
 class Transition(EmbeddedDocument):
     from_state = ListField(StringField(required=True))
@@ -36,6 +26,8 @@ class Labelling(EmbeddedDocument):
 
 
 class LTS(EmbeddedDocument):
+    name = StringField(required=True)
+    initial_state = ListField(StringField(required=True))
     transitions = EmbeddedDocumentListField(Transition)
     labellings = EmbeddedDocumentListField(Labelling)
 

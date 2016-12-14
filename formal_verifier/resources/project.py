@@ -6,7 +6,7 @@ from formal_verifier import api
 from formal_verifier.models import Project
 
 
-class Project(Resource):
+class ProjectResource(Resource):
 
     @jwt_required
     def get(self, project_id):
@@ -35,4 +35,4 @@ class Project(Resource):
         return project
 
 
-api.add_resource(Project, '/projects/<project_id>')
+api.add_resource(ProjectResource, '/projects/<project_id>')

@@ -1,18 +1,13 @@
 from flask import make_response, jsonify
 import bson.json_util
 from formal_verifier import api, app
-from mongoengine.fields import QuerySet
-from mongoengine import Document
 
 
 def convert_to_json(data):
-    print(type, data)
-    if isinstance(data, QuerySet) or isinstance(data, Document):
+    if hasattr(data, 'to_json'):
         return data.to_json()
-    elif isinstance(data, dict):
-        return bson.json_util.dumps(data)
     else:
-        return jsonify(data)
+        return bson.json_util.dumps(data)
 
 
 def custom_json_output(data, code, headers=None):
