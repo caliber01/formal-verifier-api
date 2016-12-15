@@ -47,26 +47,15 @@ def map_user_to_view_model(user):
     return data
 
 
-def generate_source(lts):
-    source = "".join(lts.initial_state) + "\n"
-    for (from_state, token, to_state) in lts.transitions:
-        source += "".join(from_state) + " " + token + " " + "".join(to_state) + "\n"
-    source += "\n"
-
-    for (state, labels) in lts.labellings.items():
-        source += "".join(state) + ": " + ", ".join(labels) + "\n"
-
-    return source
-
-
 def map_lts_to_view_model(model):
     lts = map_lts_from_mongo(model)
     name = model.name
     graph = generate_extended_diagram(lts, set())
     return {
+        '_id': model.to_mongo()['_id'],
         'name': name,
         'graph': graph,
-        'source': generate_source(lts),
+        'source': model.source,
         'formulas': model.formulas
     }
 

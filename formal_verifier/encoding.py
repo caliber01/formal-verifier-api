@@ -11,7 +11,6 @@ def convert_to_json(data):
 
 
 def custom_json_output(data, code, headers=None):
-    app.logger.info("Custom converter")
     dumped = convert_to_json(data)
     resp = make_response(dumped, code)
     resp.headers.extend(headers or {})

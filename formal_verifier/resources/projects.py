@@ -8,7 +8,6 @@ from formal_verifier.mappers import map_project_to_view_model
 
 
 class ProjectsList(Resource):
-
     @jwt_required
     def get(self):
         owner = User.objects(username=get_jwt_identity()).first()
@@ -17,12 +16,14 @@ class ProjectsList(Resource):
     @jwt_required
     def post(self):
         json = request.get_json()
-        project = Project.from_json(json)
+        fields = {key: value for (key, value) in json.items() if key in Project._fields}
+        project = Project(**fields)
         owner = User.objects(username=get_jwt_identity()).first()
         app.logger.info(owner)
         project.owner = owner
         project.models = []
         project.save()
         return map_project_to_view_model(project)
+
 
 api.add_resource(ProjectsList, '/projects')

@@ -1,3 +1,4 @@
+from bson import ObjectId
 from mongoengine import *
 
 connect()
@@ -26,11 +27,13 @@ class Labelling(EmbeddedDocument):
 
 
 class LTS(EmbeddedDocument):
+    _id = ObjectIdField(required=True, default=lambda: ObjectId())
     name = StringField(unique=True, required=True)
     initial_state = ListField(StringField(required=True))
     transitions = EmbeddedDocumentListField(Transition)
     labellings = EmbeddedDocumentListField(Labelling)
     formulas = ListField(StringField(required=True))
+    source = StringField(unique=True, required=True, default='')
 
 
 class Project(Document):
