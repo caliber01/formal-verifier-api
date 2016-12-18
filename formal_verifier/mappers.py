@@ -49,11 +49,10 @@ def map_user_to_view_model(user):
 
 def map_lts_to_view_model(model):
     lts = map_lts_from_mongo(model)
-    name = model.name
     graph = generate_extended_diagram(lts, set())
     return {
         '_id': model.to_mongo()['_id'],
-        'name': name,
+        'name': model.name,
         'graph': graph,
         'source': model.source,
         'formulas': model.formulas
