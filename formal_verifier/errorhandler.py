@@ -20,4 +20,4 @@ for errorType in [400, ValidationError, NotUniqueError]:
     @app.errorhandler(errorType)
     def handle_validation_error(error):
         app.logger.error(error)
-        return jsonify({'Bad request'}), 400
+        return jsonify({'message': 'Bad request'}), 400

@@ -23,6 +23,7 @@ class ProjectResource(Resource):
         if project is None or not project.owner.username == get_jwt_identity():
             return abort(404)
         project.delete()
+        return {'success': True}
 
     @jwt_required
     def put(self, project_id):
