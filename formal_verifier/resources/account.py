@@ -26,11 +26,16 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
     json = request.get_json()
-    user = User.from_json(json)
+    fields = {key: value for (key, value) in json.items() if key in User._fields}
+    user = User(**fields)
     user.password_hash = bcrypt.generate_password_hash(json['password'])
     user.is_active = True
     user.save()
-    return user.to_json()
+    response = {
+        'access_token': create_access_token(identity=user.username),
+        'user': map_user_to_view_model(user)
+    }
+    return dumps(response)
 
 
 @app.route('/account', methods=['GET'])

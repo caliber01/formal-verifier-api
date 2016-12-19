@@ -46,6 +46,15 @@ class ModelResource(Resource):
         model.save()
         return map_lts_to_view_model(model)
 
+    @jwt_required
+    def delete(self, project_id, model_id):
+        project = Project.objects(id=project_id).first()
+        if project is None or not project.owner.username == get_jwt_identity():
+            return abort(404)
+        project.models = project.models.exclude(_id=model_id)
+        project.save()
+        return {'success': True}
+
 
 api.add_resource(ModelResource, '/projects/<project_id>/models/<model_id>')
 
