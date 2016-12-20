@@ -12,6 +12,7 @@ setup(
         'flask-bcrypt',
         'flask-cors',
         'flask-jwt-extended',
-        'flask-restful', 'mongoengine', 'bson'
+        'flask-restful',
+        'mongoengine',
     ]
 )
