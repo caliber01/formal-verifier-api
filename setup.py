@@ -8,6 +8,10 @@ setup(
     license="MIT",
     packages=find_packages(),
     install_requires=[
-        'flask'
+        'flask',
+        'flask-bcrypt',
+        'flask-cors',
+        'flask-jwt-extended',
+        'flask-restful'
     ]
 )
